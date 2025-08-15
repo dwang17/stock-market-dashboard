@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+h1 {
+    align-items: center;
+}
