@@ -1,6 +1,7 @@
 "use client"
 import * as React from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
+import ToggleData from "./ToggleData"
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
 
@@ -36,11 +37,14 @@ type ChartsProps = {
 export default function Charts({ selectedSymbol }: ChartsProps) {
 
   const [dailyChartData, setDailyChartData] = React.useState<ChartsType[] | null>(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [dataType, setDataType] = useState("Historical");
 
 
   useEffect(() => {
-    fetch(`http://localhost:8000/daily-chart-data?symbol=${selectedSymbol}`)
+    const endpoint = dataType === "Historical" ? "daily-chart-data" : "predicted-chart-data";
+
+    fetch(`http://localhost:8000/${endpoint}?symbol=${selectedSymbol}`)
       .then((res) => res.json())
       .then((data) => {
         setDailyChartData(data); // data = { symbol, date, open, high, low, close, volume, change, changePercent, vwap }
@@ -49,7 +53,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
       .catch((err) => {
         console.error("Failed to load stock data:", err);
       });
-  }, [selectedSymbol]);
+  }, [selectedSymbol, dataType]);
 
   if (loading) return <Typography sx={{ color: "#fff", mt: 4, textAlign: "center" }}>Loading...</Typography>;
 
@@ -75,9 +79,14 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
       }}
     >
       <CardContent>
-        <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ color: "#fff" }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "#fff" }}>
           {dailyChartData[0].symbol} Stock Chart
         </Typography>
+        
+        <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
+          <ToggleData value={dataType} onChange={setDataType}/>
+        </Box>
+          
         <Box sx={{ height: 600, width: "100%" }}>
           <LineChart
             sx={{
