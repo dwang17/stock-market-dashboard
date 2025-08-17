@@ -92,7 +92,7 @@ async def get_predicted_chart_data(symbol: str = Query("AAPL")):
     model.fit(X, y)
 
     next_seven_date_indexes = np.arange(len(df), len(df) + 7).reshape(-1, 1)
-    predicted_prices = model.predict(next_seven_date_indexes).ravel()
+    predicted_prices = model.predict(next_seven_date_indexes).ravel() # flatten to pass into DataFrame
 
     # Add some small random noise to make it less perfectly linear
     predicted_prices += np.random.normal(0, 2, size=predicted_prices.shape)  # adjust std dev as needed
