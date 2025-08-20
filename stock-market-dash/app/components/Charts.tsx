@@ -37,7 +37,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
   useEffect(() => {
     const endpoint = dataType === "Historical" ? "daily-chart-data" : "predicted-chart-data";
 
-    fetch(`http://localhost:8000/${endpoint}?symbol=${selectedSymbol}`)
+    fetch(`http://localhost:8000/${endpoint}?symbol=${selectedSymbol}&timeType=${timeType}`)
       .then((res) => res.json())
       .then((data) => {
         setDailyChartData(data); // data = { symbol, date, open, high, low, close, volume, change, changePercent, vwap }
@@ -61,6 +61,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
   }
 
   console.log("TIME TYPE: " + timeType)
+  console.log("DATA!!!: " + dailyData)
 
   return (
     <Card

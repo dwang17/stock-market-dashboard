@@ -54,14 +54,18 @@ async def get_stock_details_data(symbol: str = Query("AAPL")):
     return full_data
 
 @app.get("/daily-chart-data") #past 7 days (for charts)
-async def get_daily_chart_data(symbol: str = Query("AAPL")):
+async def get_daily_chart_data(symbol: str = Query("AAPL"), timeType: str = Query("day")):
     url = f"https://financialmodelingprep.com/stable/historical-price-eod/full?symbol={symbol}&apikey={API_KEY}"
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
         data = response.json()
     
-    last_seven_days = data[:7]
-    last_seven_days.reverse()
+    if timeType == "day":
+        last_seven_days = data[:7]
+        last_seven_days.reverse()
+
+    else:
+        last_seven_days = data[:7]
     
     return last_seven_days
 
