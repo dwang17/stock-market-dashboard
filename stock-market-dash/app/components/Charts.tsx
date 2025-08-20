@@ -2,20 +2,12 @@
 import * as React from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
 import ToggleData from "./ToggleData"
+import ToggleButtons from "./ToggleButtons";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
 
-const margin = { right: 24 };
-// const dailyData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-// const xLabels = [
-//   'Page A',
-//   'Page B',
-//   'Page C',
-//   'Page D',
-//   'Page E',
-//   'Page F',
-//   'Page G',
-// ];
+const margin = { bottom: 10, right: 50 };
+
 
 type ChartsType = {
   symbol: string,
@@ -39,6 +31,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
   const [dailyChartData, setDailyChartData] = React.useState<ChartsType[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [dataType, setDataType] = useState("Historical");
+  const [timeType, setTimeType] = React.useState<string | null>('day');
 
 
   useEffect(() => {
@@ -53,7 +46,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
       .catch((err) => {
         console.error("Failed to load stock data:", err);
       });
-  }, [selectedSymbol, dataType]);
+  }, [selectedSymbol, dataType, timeType]);
 
   if (loading) return <Typography sx={{ color: "#fff", mt: 4, textAlign: "center" }}>Loading...</Typography>;
 
@@ -66,6 +59,8 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
     xLabels.push(dailyChartData[i].date);
     dailyData.push(dailyChartData[i].close)
   }
+
+  console.log("TIME TYPE: " + timeType)
 
   return (
     <Card
@@ -83,7 +78,9 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
           {dailyChartData[0].symbol} Stock Chart
         </Typography>
         
-        <Box sx={{ display: "flex", justifyContent: "flex-end"}}>
+        <ToggleButtons value={timeType} onChange={setTimeType}/>
+        
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt:0.1}}>
           <ToggleData value={dataType} onChange={setDataType}/>
         </Box>
           

@@ -32,17 +32,9 @@ async def get_top_stocks():
         data = response.json()
     return data[:10]  # top 10 gainers
 
-# @app.get("/stock-details")
-# async def get_stock_details(symbol: str = Query("AAPL")):
-#     url = f"https://financialmodelingprep.com/stable/historical-price-eod/light?symbol={symbol}&apikey={API_KEY}"
-#     async with httpx.AsyncClient() as client:
-#         response = await client.get(url)
-#         data = response.json()
-    
-#     return data[0]
 
 @app.get("/stock-details") #past 7 days (for stock details)
-async def get_daily_chart_data(symbol: str = Query("AAPL")):
+async def get_stock_details_data(symbol: str = Query("AAPL")):
     url_prices = f"https://financialmodelingprep.com/stable/historical-price-eod/full?symbol={symbol}&apikey={API_KEY}"
     url_details = f"https://financialmodelingprep.com/stable/search-symbol?query={symbol}&apikey={API_KEY}"
     async with httpx.AsyncClient() as client:
