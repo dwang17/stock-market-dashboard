@@ -42,7 +42,7 @@ export default function TopPerformers() {
   return (
     <Card sx={{ maxWidth: 1100, margin: "auto", mt: 4, boxShadow: 3, backgroundColor: "#4A4F58", color: "#fff" }}>
       <CardContent>
-        <Box sx={{ height: 332.5, width: "100%" }}>
+        <Box sx={{ height: 400, width: "100%" }}>
             <Typography variant="h5" component="div" sx={{ mb: 3 }}>
                 Top Performers
             </Typography>
@@ -74,6 +74,18 @@ export default function TopPerformers() {
               {topPerformers[4].symbol}{" "}
               <Box component="span" sx={{ fontSize: '1.25rem' }}>
                 +{topPerformers[4].change.toFixed(2)} ({topPerformers[4].changesPercentage.toFixed(2)}%)
+              </Box>
+            </Typography>
+            <Typography variant="h4" component="div" sx={{ mb: 1 }}>
+              {topPerformers[5].symbol}{" "}
+              <Box component="span" sx={{ fontSize: '1.25rem' }}>
+                +{topPerformers[5].change.toFixed(2)} ({topPerformers[5].changesPercentage.toFixed(2)}%)
+              </Box>
+            </Typography>
+            <Typography variant="h4" component="div" sx={{ mb: 1 }}>
+              {topPerformers[6].symbol}{" "}
+              <Box component="span" sx={{ fontSize: '1.25rem' }}>
+                +{topPerformers[6].change.toFixed(2)} ({topPerformers[6].changesPercentage.toFixed(2)}%)
               </Box>
             </Typography>
         </Box>
