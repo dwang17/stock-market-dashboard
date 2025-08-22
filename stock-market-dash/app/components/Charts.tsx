@@ -60,9 +60,9 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
     dailyData.push(dailyChartData[i].close)
   }
 
-  console.log("TIME TYPE: " + timeType)
-  console.log("DATA!!!: " + dailyData)
-  console.log("CHARTDATA!!!!! " + dailyChartData[0].date)
+  // console.log("TIME TYPE: " + timeType)
+  // console.log("DATA!!!: " + dailyData)
+  // console.log("CHARTDATA!!!!! " + dailyChartData[0].date)
 
   return (
     <Card
@@ -76,15 +76,18 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
       }}
     >
       <CardContent>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "#fff" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt:0.1}}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "#fff" }}>
           {dailyChartData[0].symbol} Stock Chart
-        </Typography>
-        
-        <ToggleButtons value={timeType} onChange={setTimeType}/>
-        
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt:0.1}}>
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+          <ToggleButtons value={timeType} onChange={setTimeType} />
           <ToggleData value={dataType} onChange={setDataType}/>
         </Box>
+        
+        
           
         <Box sx={{ height: 600, width: "100%" }}>
           <LineChart
