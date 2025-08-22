@@ -54,7 +54,7 @@ async def get_stock_details_data(symbol: str = Query("AAPL")):
 
     return full_data
 
-@app.get("/daily-chart-data") #past 7 days (for charts)
+@app.get("/daily-chart-data") #historical
 async def get_daily_chart_data(symbol: str = Query("AAPL"), timeType: str = Query("day")):
     url = f"https://financialmodelingprep.com/stable/historical-price-eod/full?symbol={symbol}&apikey={API_KEY}"
     async with httpx.AsyncClient() as client:
@@ -89,8 +89,8 @@ async def get_daily_chart_data(symbol: str = Query("AAPL"), timeType: str = Quer
 
     return []
 
-@app.get("/predicted-chart-data") #next 7 days (for charts)
-async def get_predicted_chart_data(symbol: str = Query("AAPL")):
+@app.get("/predicted-chart-data") #predicted
+async def get_predicted_chart_data(symbol: str = Query("AAPL"), timeType: str = Query("day")):
     url = f"https://financialmodelingprep.com/stable/historical-price-eod/full?symbol={symbol}&apikey={API_KEY}"
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
@@ -115,7 +115,36 @@ async def get_predicted_chart_data(symbol: str = Query("AAPL")):
 
 
     last_date = pd.to_datetime(df["date"].iloc[0])  # most recent date
-    predicted_dates = [last_date + pd.Timedelta(days=i) for i in range(1, 8)]
+    
+    predicted_dates = []
+    if timeType == "day":
+        day_number = 1
+        while len(predicted_dates) < 7:
+            next_date = last_date + pd.Timedelta(days=day_number)
+            if next_date.weekday() < 5:
+                predicted_dates.append(next_date)
+            day_number += 1
+    if timeType == "week":
+        week_number = 1
+        while len(predicted_dates) < 7:
+            next_date = last_date + pd.Timedelta(weeks=week_number)
+            if next_date.weekday() == 5:
+                next_date -= pd.Timedelta(days=1)
+            if next_date.weekday() == 6:
+                next_date -= pd.Timedelta(days=2)
+            predicted_dates.append(next_date)
+            week_number += 1
+    if timeType == "month":
+        month_number = 1
+        while len(predicted_dates) < 7:
+            next_date = last_date + pd.DateOffset(months=month_number)
+            if next_date.weekday() == 5:
+                next_date -= pd.Timedelta(days=1)
+            if next_date.weekday() == 6:
+                next_date -= pd.Timedelta(days=2)
+            predicted_dates.append(next_date)    
+            month_number += 1
+
 
     # Build predicted DataFrame
     pred_df = pd.DataFrame({
