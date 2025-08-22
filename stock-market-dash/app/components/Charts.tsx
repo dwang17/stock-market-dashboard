@@ -62,6 +62,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
 
   console.log("TIME TYPE: " + timeType)
   console.log("DATA!!!: " + dailyData)
+  console.log("CHARTDATA!!!!! " + dailyChartData[0].date)
 
   return (
     <Card

@@ -36,9 +36,6 @@ export default function ToggleButtons({ value, onChange }: ToggleButtonsProps) {
       <ToggleButton value="month" aria-label="months">
         MONTH
       </ToggleButton>
-      <ToggleButton value="year" aria-label="years">
-        YEAR
-      </ToggleButton>
     </ToggleButtonGroup>
   );
 }

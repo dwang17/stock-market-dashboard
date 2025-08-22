@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query
 import httpx
 import os
+import json
 import pandas as pd 
 import numpy as np
 import datetime
@@ -59,15 +60,34 @@ async def get_daily_chart_data(symbol: str = Query("AAPL"), timeType: str = Quer
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
         data = response.json()
-    
     if timeType == "day":
         last_seven_days = data[:7]
         last_seven_days.reverse()
+        return last_seven_days
 
-    else:
-        last_seven_days = data[:7]
+    if timeType == "week":
+        last_seven_weeks_dates = []
+        last_ten_weeks = data[:50]
+        count = 0
+        for i in range(len(last_ten_weeks)):
+            if (i % 5 == 0 and count < 7):
+                last_seven_weeks_dates.append(last_ten_weeks[i])
+                count += 1
+        last_seven_weeks_dates.reverse()
+        return last_seven_weeks_dates
     
-    return last_seven_days
+    if timeType == "month":
+        last_seven_months_dates = []
+        last_ten_months = data[:220]
+        count = 0
+        for i in range(len(last_ten_months)):
+            if (i % 20 == 0 and count < 7):
+                last_seven_months_dates.append(last_ten_months[i])
+                count += 1
+        last_seven_months_dates.reverse()
+        return last_seven_months_dates
+
+    return []
 
 @app.get("/predicted-chart-data") #next 7 days (for charts)
 async def get_predicted_chart_data(symbol: str = Query("AAPL")):
