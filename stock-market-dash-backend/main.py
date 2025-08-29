@@ -8,6 +8,7 @@ import datetime
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 load_dotenv()
 
@@ -104,14 +105,17 @@ async def get_predicted_chart_data(symbol: str = Query("AAPL"), timeType: str = 
     X = df[["date_index"]].values
     y = df[["close"]].values
 
+    poly = PolynomialFeatures(degree=3) 
+    X_poly = poly.fit_transform(X)
     model = LinearRegression()
-    model.fit(X, y)
+    model.fit(X_poly, y)
 
     next_seven_date_indexes = np.arange(len(df), len(df) + 7).reshape(-1, 1)
-    predicted_prices = model.predict(next_seven_date_indexes).ravel() # flatten to pass into DataFrame
+    next_seven_poly = poly.transform(next_seven_date_indexes)
+    predicted_prices = model.predict(next_seven_poly).ravel() # flatten to pass into DataFrame
 
-    # Add some small random noise to make it less perfectly linear
-    predicted_prices += np.random.normal(0, 2, size=predicted_prices.shape)  # adjust std dev as needed
+    # Add some small random noise to make it less perfectly polynomial
+    predicted_prices += np.random.normal(0, 0.01 * np.mean(y), size=predicted_prices.shape)   # adjust std dev as needed
 
 
     last_date = pd.to_datetime(df["date"].iloc[0])  # most recent date
