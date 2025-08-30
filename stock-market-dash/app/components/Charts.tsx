@@ -1,20 +1,13 @@
 "use client"
 import * as React from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
+import ToggleData from "./ToggleData"
+import ToggleButtons from "./ToggleButtons";
 import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
 
-const margin = { right: 24 };
-// const dailyData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-// const xLabels = [
-//   'Page A',
-//   'Page B',
-//   'Page C',
-//   'Page D',
-//   'Page E',
-//   'Page F',
-//   'Page G',
-// ];
+const margin = { bottom: 10, right: 50 };
+
 
 type ChartsType = {
   symbol: string,
@@ -36,11 +29,15 @@ type ChartsProps = {
 export default function Charts({ selectedSymbol }: ChartsProps) {
 
   const [dailyChartData, setDailyChartData] = React.useState<ChartsType[] | null>(null);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+  const [dataType, setDataType] = useState("Historical");
+  const [timeType, setTimeType] = React.useState<string | null>('day');
 
 
   useEffect(() => {
-    fetch(`http://localhost:8000/daily-chart-data?symbol=${selectedSymbol}`)
+    const endpoint = dataType === "Historical" ? "daily-chart-data" : "predicted-chart-data";
+
+    fetch(`http://localhost:8000/${endpoint}?symbol=${selectedSymbol}&timeType=${timeType}`)
       .then((res) => res.json())
       .then((data) => {
         setDailyChartData(data); // data = { symbol, date, open, high, low, close, volume, change, changePercent, vwap }
@@ -49,7 +46,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
       .catch((err) => {
         console.error("Failed to load stock data:", err);
       });
-  }, [selectedSymbol]);
+  }, [selectedSymbol, dataType, timeType]);
 
   if (loading) return <Typography sx={{ color: "#fff", mt: 4, textAlign: "center" }}>Loading...</Typography>;
 
@@ -63,6 +60,10 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
     dailyData.push(dailyChartData[i].close)
   }
 
+  // console.log("TIME TYPE: " + timeType)
+  // console.log("DATA!!!: " + dailyData)
+  // console.log("CHARTDATA!!!!! " + dailyChartData[0].date)
+
   return (
     <Card
       sx={{
@@ -75,9 +76,19 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
       }}
     >
       <CardContent>
-        <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ color: "#fff" }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt:0.1}}>
+          <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "#fff" }}>
           {dailyChartData[0].symbol} Stock Chart
-        </Typography>
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+          <ToggleButtons value={timeType} onChange={setTimeType} />
+          <ToggleData value={dataType} onChange={setDataType}/>
+        </Box>
+        
+        
+          
         <Box sx={{ height: 600, width: "100%" }}>
           <LineChart
             sx={{
