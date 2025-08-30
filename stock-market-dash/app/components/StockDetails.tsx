@@ -43,6 +43,9 @@ const allSymbols = [
   "RKT"
 ]
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+
 type StockDetailsProps = {
   selectedSymbol: string;
   onSymbolChange: React.Dispatch<React.SetStateAction<string>>;
@@ -56,7 +59,7 @@ export default function StockDetails({ selectedSymbol, onSymbolChange }: StockDe
 
 
   useEffect(() => {
-    fetch(`http://localhost:8000/stock-details?symbol=${selectedSymbol}`)
+    fetch(`${API_BASE}/stock-details?symbol=${selectedSymbol}`)
       .then((res) => res.json())
       .then((data) => {
         setStockDetails(data); // data = { symbol, date, price, volume }

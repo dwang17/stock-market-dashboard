@@ -7,6 +7,7 @@ import { Card, CardContent, Typography, Box } from "@mui/material";
 import { useState, useEffect } from "react";
 
 const margin = { bottom: 10, right: 50 };
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 
 type ChartsType = {
@@ -37,7 +38,7 @@ export default function Charts({ selectedSymbol }: ChartsProps) {
   useEffect(() => {
     const endpoint = dataType === "Historical" ? "daily-chart-data" : "predicted-chart-data";
 
-    fetch(`http://localhost:8000/${endpoint}?symbol=${selectedSymbol}&timeType=${timeType}`)
+    fetch(`${API_BASE}/${endpoint}?symbol=${selectedSymbol}&timeType=${timeType}`)
       .then((res) => res.json())
       .then((data) => {
         setDailyChartData(data); // data = { symbol, date, open, high, low, close, volume, change, changePercent, vwap }
